@@ -1,0 +1,72 @@
+networks:
+  cassandra-net:
+    driver: bridge
+
+x-common: &common-config
+  networks:
+    - cassandra-net
+  command: >
+    bash -c "
+    sed -i 's/^read_request_timeout:.*/read_request_timeout: 600s/' /etc/cassandra/cassandra.yaml &&
+    sed -i 's/^range_request_timeout:.*/range_request_timeout: 600s/' /etc/cassandra/cassandra.yaml &&
+    sed -i 's/^write_request_timeout:.*/write_request_timeout: 600s/' /etc/cassandra/cassandra.yaml &&
+    sed -i 's/^request_timeout:.*/request_timeout: 600s/' /etc/cassandra/cassandra.yaml &&
+    exec /usr/local/bin/docker-entrypoint.sh cassandra -f"
+    
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    command: postgres -c max_connections=330
+
+  cassandra1:
+    image: cassandra:latest
+    container_name: cassandra1
+    hostname: cassandra1
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_DC: DC1
+      CASSANDRA_RACK: rack1
+      MAX_HEAP_SIZE: 2G
+      HEAP_NEWSIZE: 100M
+      CASSANDRA_SEEDS: cassandra1
+      CASSANDRA_CLUSTER_NAME: MeuClusterMultiDC
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+    <<: *common-config
+
+  cassandra2:
+    image: cassandra:latest
+    container_name: cassandra2
+    hostname: cassandra2
+    environment:
+      CASSANDRA_DC: DC1
+      CASSANDRA_RACK: rack1
+      MAX_HEAP_SIZE: 2G
+      HEAP_NEWSIZE: 100M
+      CASSANDRA_SEEDS: cassandra1
+      CASSANDRA_CLUSTER_NAME: MeuClusterMultiDC
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+    depends_on:
+      - cassandra1
+    <<: *common-config
+  
+  cassandra3:
+    image: cassandra:latest
+    container_name: cassandra3
+    hostname: cassandra3
+    environment:
+      CASSANDRA_DC: DC1
+      CASSANDRA_RACK: rack1
+      MAX_HEAP_SIZE: 2G
+      HEAP_NEWSIZE: 100M
+      CASSANDRA_SEEDS: cassandra1,cassandra5
+      CASSANDRA_CLUSTER_NAME: MeuClusterMultiDC
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+    <<: *common-config

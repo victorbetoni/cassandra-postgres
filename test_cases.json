@@ -1,0 +1,32 @@
+[
+    {
+        "description": "Contagem de linhas",
+        "cassandra": "SELECT COUNT(*) FROM telemetry",
+        "postgres": "SELECT COUNT(*) FROM telemetry",
+        "size": 1
+    },
+    {
+        "description": "Média de temperatura",
+        "cassandra": "SELECT AVG(temperature) FROM telemetry",
+        "postgres": "SELECT AVG(temperature) FROM telemetry",
+        "size": 1
+    },
+    {
+        "description": "Select com where simples",
+        "cassandra": "SELECT * FROM telemetry WHERE temperature < 15 ALLOW FILTERING",
+        "postgres": "SELECT * FROM telemetry WHERE temperature < 15",
+        "size": 9
+    },
+    {
+        "description": "Select usando chave",
+        "cassandra": "SELECT * FROM telemetry WHERE device = '00:0f:00:70:91:0a'",
+        "postgres": "SELECT * FROM telemetry WHERE device = '00:0f:00:70:91:0a'",
+        "size": 9
+    },
+    {
+        "description": "Select de último elemento inserido",
+        "cassandra": "SELECT * FROM telemetry WHERE device = '1c:bf:ce:15:ec:4d' LIMIT 1",
+        "postgres": "SELECT * FROM telemetry WHERE device = '1c:bf:ce:15:ec:4d' LIMIT 1",
+        "size": 9
+    }
+]
