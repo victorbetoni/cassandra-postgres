@@ -7,9 +7,9 @@
     },
     {
         "description": "Média de temperatura",
-        "cassandra": "SELECT AVG(temperature) FROM telemetry",
-        "postgres": "SELECT AVG(temperature) FROM telemetry",
-        "size": 1
+        "cassandra": "SELECT device, AVG(temperature) AS temp FROM telemetry GROUP BY device",
+        "postgres": "SELECT device, AVG(temperature) AS temp FROM telemetry GROUP BY device",
+        "size": 1 
     },
     {
         "description": "Select com where simples",
@@ -27,6 +27,12 @@
         "description": "Select de último elemento inserido",
         "cassandra": "SELECT * FROM telemetry WHERE device = '1c:bf:ce:15:ec:4d' LIMIT 1",
         "postgres": "SELECT * FROM telemetry WHERE device = '1c:bf:ce:15:ec:4d' LIMIT 1",
+        "size": 9
+    },
+    {
+        "description": "Busca de string",
+        "cassandra": "SELECT * FROM device_configuration_history WHERE firmware_version = '811212' ALLOW FILTERING",
+        "postgres": "SELECT * FROM device_configuration_history WHERE firmware_version = '450175'",
         "size": 9
     }
 ]

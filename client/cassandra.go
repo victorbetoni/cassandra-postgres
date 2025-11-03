@@ -50,19 +50,27 @@ func (ca *CassandraClient) RunTimer(query string, size int) (int, int) {
 	return time, count
 }
 
-func (ca *CassandraClient) Load(data []model.Telemetry, c chan int, id int) {
+func (ca *CassandraClient) Load(data []model.Telemetry, data2 []model.DeviceConfigHistory, c chan int, id int) {
 	ca.Connect()
+	fmt.Println("Postgres ", len(data)+len(data2))
 	fmt.Printf("Worker %d conectou\n", id)
 	defer ca.Session.Close()
-	query := `
+	query1 := `
 		INSERT INTO telemetry (
 			timestamp, device, carbonmonoxide, humidity, light, lpg, motion, smoke, temperature
 		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
+
+	query2 := `
+		INSERT INTO device_configuration_history (
+			device, valid_to_timestamp, firmware_version
+		) VALUES (?,?,?)
+	`
 	c <- Timer(func() {
+		total := len(data) + len(data2)
 		i := 0
 		for _, dt := range data {
-			q := ca.Session.Query(query,
+			q := ca.Session.Query(query1,
 				dt.Timestamp,
 				dt.Device,
 				dt.CarbonMonoxide,
@@ -78,7 +86,21 @@ func (ca *CassandraClient) Load(data []model.Telemetry, c chan int, id int) {
 			}
 			i++
 			if i%1000 == 0 {
-				fmt.Printf("Worker %d: %d/%d\n", id, i, len(data))
+				fmt.Printf("Worker %d: %.2f/%%\n", id, float64(100*i)/float64(total))
+			}
+		}
+		for _, dt := range data2 {
+			q := ca.Session.Query(query2,
+				dt.Device,
+				dt.ValidToTimestamp,
+				dt.FirmwareVersion,
+			)
+			if err := q.Exec(); err != nil {
+				panic(err)
+			}
+			i++
+			if i%1000 == 0 {
+				fmt.Printf("Worker %d: %.2f/%%\n", id, float64(100*i)/float64(total))
 			}
 		}
 	})

@@ -36,7 +36,6 @@ services:
       CASSANDRA_RACK: rack1
       MAX_HEAP_SIZE: 2G
       HEAP_NEWSIZE: 100M
-      CASSANDRA_SEEDS: cassandra1
       CASSANDRA_CLUSTER_NAME: MeuClusterMultiDC
       CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
     <<: *common-config

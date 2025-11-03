@@ -11,3 +11,9 @@ type Telemetry struct {
 	Smoke          float64 `db:"smoke"`
 	Temperature    float64 `db:"temperature"`
 }
+
+type DeviceConfigHistory struct {
+	Device           string  `db:"device"`
+	ValidToTimestamp float64 `db:"valid_to_timestamp"`
+	FirmwareVersion  string  `db:"firmware_version"`
+}
