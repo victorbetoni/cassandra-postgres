@@ -34,5 +34,11 @@
         "cassandra": "SELECT * FROM device_configuration_history WHERE firmware_version = '811212' ALLOW FILTERING",
         "postgres": "SELECT * FROM device_configuration_history WHERE firmware_version = '450175'",
         "size": 9
+    },
+    {
+        "description": "Busca com Join",
+        "cassandra": "SELECT * FROM config_by_telemetry WHERE firmware_version = '10' ALLOW FILTERING",
+        "postgres": "SELECT * FROM telemetry INNER JOIN device_configuration_history ON telemetry.device = device_configuration_history.device WHERE firmware_version = '10'",
+        "size": 9
     }
 ]

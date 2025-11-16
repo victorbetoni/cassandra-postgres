@@ -1949,7 +1949,7 @@ report_unconfirmed_repaired_data_mismatches: false
 
 # Enables materialized view creation on this node.
 # Materialized views are considered experimental and are not recommended for production use.
-materialized_views_enabled: false
+materialized_views_enabled: true
 
 # Enables SASI index creation on this node.
 # SASI indexes are considered experimental and are not recommended for production use.

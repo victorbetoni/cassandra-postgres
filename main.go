@@ -68,9 +68,9 @@ func main() {
 		fmt.Println("Iniciando load Cassandra...")
 		tempoCassandra := tests.CassandraLoad(data, data2, t)
 		fmt.Println("Iniciando load Postgres...")
-		tempoPostgres := tests.PostgresLoad(data, data2, t)
+		//tempoPostgres := tests.PostgresLoad(data, data2, t)
 		fmt.Printf("Cassandra: %d milisegundos\n", tempoCassandra)
-		fmt.Printf("Postgres: %d milisegundos\n", tempoPostgres)
+		//fmt.Printf("Postgres: %d milisegundos\n", tempoPostgres)
 	}
 
 	if os.Args[1:][0] == "queries" {
