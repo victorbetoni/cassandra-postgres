@@ -25,3 +25,10 @@ CREATE TABLE IF NOT EXISTS device_configuration_history (
     firmware_version text,
     PRIMARY KEY (device, valid_to_timestamp)
 ) WITH CLUSTERING ORDER BY (valid_to_timestamp DESC);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS config_by_firmware_version AS
+    SELECT device, valid_to_timestamp, firmware_version
+    FROM device_configuration_history
+    WHERE device IS NOT NULL AND valid_to_timestamp IS NOT NULL AND firmware_version IS NOT NULL
+    PRIMARY KEY (firmware_version, valid_to_timestamp, device)
+WITH CLUSTERING ORDER BY (valid_to_timestamp DESC);
